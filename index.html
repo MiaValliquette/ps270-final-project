@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["anes_timeseries_2024_csv_20250808.csv","anes_timeseries_2024_userguidecodebook_20250808.pdf","index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1548,7 +1548,39 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <p>I am interested in exploring data related to…
 -correlation to education and voting patterns
 -political shifts in the most liberal states between 2020-2024</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>anes_2024</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"anes_timeseries_2024_csv_20250808.csv"</span><span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>anes_2024</span><span class='op'>)</span></span></code></pre>
+</div>
+<pre><code># A tibble: 6 × 1,722
+  version      V240001 V200001 V160001_orig V240002a V240002b V240002c
+  &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+1 ANES2024Tim…  140001  200015       401318        2        2        2
+2 ANES2024Tim…  140002  200022       300261        2        2        2
+3 ANES2024Tim…  140003  200039       400181        2        2        2
+4 ANES2024Tim…  140004  200046       300171        2        2        2
+5 ANES2024Tim…  140005  200053       405145        2        2        2
+6 ANES2024Tim…  140006  200060       400374        2        2        2
+# ℹ 1,715 more variables: V240003 &lt;dbl&gt;, V240101a &lt;dbl&gt;,
+#   V240101b &lt;dbl&gt;, V240101c &lt;dbl&gt;, V240101d &lt;dbl&gt;, V240102a &lt;dbl&gt;,
+#   V240102b &lt;dbl&gt;, V240102c &lt;dbl&gt;, V240102d &lt;dbl&gt;, V240103a &lt;dbl&gt;,
+#   V240103b &lt;dbl&gt;, V240103c &lt;dbl&gt;, V240103d &lt;dbl&gt;, V240104a &lt;dbl&gt;,
+#   V240104b &lt;dbl&gt;, V240104c &lt;dbl&gt;, V240104d &lt;dbl&gt;, V240105a &lt;dbl&gt;,
+#   V240105b &lt;dbl&gt;, V240105c &lt;dbl&gt;, V240105d &lt;dbl&gt;, V240106a &lt;dbl&gt;,
+#   V240106b &lt;dbl&gt;, V240106c &lt;dbl&gt;, V240106d &lt;dbl&gt;, V240107a &lt;dbl&gt;, …</code></pre>
+</div>
+<p>How did education levels impact voting choices in the 2024 presidential election? In this project, I am interested in seeing if there is any correlation between the level of education a person has achieved and their voting choice during the 2024 election. My hypothesis is that the lower of an education a person had, they were more likely to vote for Donald Trump in the 2024 election. Many of the states Donald Trump won in 2024 have under performing school systems and many states Kamala Harris won in 2024 have higher performing school systems. For this project, I will be using American National Election Studies 2024 Time Series study to complete my analysis. My explanatory variable is V241463 and is the highest education level achieved by the respondent. This variable is measured through a pre-election survey question and has various labels for the respondent’s answer. For example, 1 = less than first grade, 2 = 1st, 2nd, 3rd or 4th grade, 3 = 5th or 6th grade, and so on until 16 = doctorate degree. My outcome variable is labelled V242067 who did the respondent vote for the 2024 presidential election. This variable is measured through a post-election survey question and is labelled 1 = Kamala Harris, 2 =Donald Trump, 4 = Cornell West, 5 = Jill Stein, and 6 = another candidate. The observed pattern in my data that would support my hypothesis would be that the data shows correlation between respondents with education levels of a high school diploma or below having voted for Donald Trump and a correlation between respondents with education levels beyond a high school diploma having voted for Kamala Harris. An observed pattern that shows no real correlation between education and voting patterns or higher educated respondents as Trump voters would disprove my hypothesis.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
