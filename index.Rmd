@@ -30,6 +30,43 @@ head(anes_2024)
 
 How did education levels impact voting choices in the 2024 presidential election? In this project, I am interested in seeing if there is any correlation between the level of education a person has achieved and their voting choice during the 2024 election. My hypothesis is that the lower of an education a person had, they were more likely to vote for Donald Trump in the 2024 election. Many of the states Donald Trump won in 2024 have under performing school systems and many states Kamala Harris won in 2024 have higher performing school systems. For this project, I will be using American National Election Studies 2024 Time Series study to complete my analysis. My explanatory variable is V241463 and is the highest education level achieved by the respondent. This variable is measured through a pre-election survey question and has various labels for the respondent's answer. For example, 1 = less than first grade, 2 = 1st, 2nd, 3rd or 4th grade, 3 = 5th or 6th grade, and so on until 16 = doctorate degree. My outcome variable is labelled V242067 who did the respondent vote for the 2024 presidential election. This variable is measured through a post-election survey question and is labelled 1 = Kamala Harris, 2 =Donald Trump, 4 = Cornell West, 5 = Jill Stein, and 6 = another candidate. The observed pattern in my data that would support my hypothesis would be that the data shows correlation between respondents with education levels of a high school diploma or below having voted for Donald Trump and a correlation between respondents with education levels beyond a high school diploma having voted for Kamala Harris. An observed pattern that shows no real correlation between education and voting patterns or higher educated respondents as Trump voters would disprove my hypothesis. 
 
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+
+```{r}
+anes_data <- anes_2024 |>
+  rename(
+    education = V241463,
+    vote_choice = V242067
+  ) |>
+drop_na(education, vote_choice)
+```
+
+
+```{r}
+anes_data |>
+  filter(vote_choice %in% c(1, 2)) |>   
+  mutate(
+    education = factor(education),
+    vote_choice = if_else(vote_choice == 1, "Democrat", "Republican")
+  ) |>
+  ggplot(aes(x = education, fill = vote_choice)) +
+  geom_bar(position = "fill") +
+  scale_fill_manual(values = c("Democrat" = "blue", "Republican" = "red")) +
+  labs(
+    title = "Vote Choice by Education Level",
+    x = "Education Level",
+    y = "Vote Proportion",
+    fill = ""
+  ) 
+anes_data
+```
+
+
+
 
 
 
