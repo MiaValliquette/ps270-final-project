@@ -64,6 +64,23 @@ anes_data |>
   ) 
 anes_data
 ```
+```{r}
+anes_data |>
+  filter(vote_choice %in% c(1, 2)) |>
+  mutate(
+    dem_vote = if_else(vote_choice == 1,1,0),
+    rep_vote = if_else(vote_choice == 2,1,0),
+    college = if_else(education >= 5, 1, 0)
+    )|>
+  summarize(
+    dem_college = mean(dem_vote[college == 1], na.rm = TRUE),
+    dem_no_college = mean(dem_vote[college == 0], na.rm = TRUE),
+    rep_college = mean(rep_vote[college == 1], na.rm = TRUE),
+    rep_no_college = mean(rep_vote[college == 0], na.rm = TRUE)
+  )|>
+  knitr::kable(digits = 2)
+```
+This table displays the average proportion of votes given to the Democratic and Republican nominee in the 2024 presidential election based on if they received a college education or not. This tables displays that people that voted Democrat were more likely to have a college degree given that 56% of the proportion of the Democrat vote was with voters who had a college degree. This also shows that people that voted for Republicans were more likely to not have a college degree given that 59% of the proportion of votes for the Republican nominee were voters without a college degree. 
 
 
 

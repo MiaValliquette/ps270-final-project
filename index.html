@@ -1639,6 +1639,43 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 #   V240104b &lt;dbl&gt;, V240104c &lt;dbl&gt;, V240104d &lt;dbl&gt;, V240105a &lt;dbl&gt;,
 #   V240105b &lt;dbl&gt;, V240105c &lt;dbl&gt;, V240105d &lt;dbl&gt;, V240106a &lt;dbl&gt;, …</code></pre>
 </div>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>anes_data</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>vote_choice</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span></span>
+<span>    dem_vote <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>vote_choice</span> <span class='op'>==</span> <span class='fl'>1</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
+<span>    rep_vote <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>vote_choice</span> <span class='op'>==</span> <span class='fl'>2</span>,<span class='fl'>1</span>,<span class='fl'>0</span><span class='op'>)</span>,</span>
+<span>    college <span class='op'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/if_else.html'>if_else</a></span><span class='op'>(</span><span class='va'>education</span> <span class='op'>&gt;=</span> <span class='fl'>5</span>, <span class='fl'>1</span>, <span class='fl'>0</span><span class='op'>)</span></span>
+<span>    <span class='op'>)</span><span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/summarise.html'>summarize</a></span><span class='op'>(</span></span>
+<span>    dem_college <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>dem_vote</span><span class='op'>[</span><span class='va'>college</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>]</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,</span>
+<span>    dem_no_college <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>dem_vote</span><span class='op'>[</span><span class='va'>college</span> <span class='op'>==</span> <span class='fl'>0</span><span class='op'>]</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,</span>
+<span>    rep_college <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>rep_vote</span><span class='op'>[</span><span class='va'>college</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>]</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>,</span>
+<span>    rep_no_college <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>rep_vote</span><span class='op'>[</span><span class='va'>college</span> <span class='op'>==</span> <span class='fl'>0</span><span class='op'>]</span>, na.rm <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span>  <span class='op'>)</span><span class='op'>|&gt;</span></span>
+<span>  <span class='fu'>knitr</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/knitr/man/kable.html'>kable</a></span><span class='op'>(</span>digits <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span></span></code></pre>
+</div>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">dem_college</th>
+<th style="text-align: right;">dem_no_college</th>
+<th style="text-align: right;">rep_college</th>
+<th style="text-align: right;">rep_no_college</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.56</td>
+<td style="text-align: right;">0.41</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.59</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This table displays the average proportion of votes given to the Democratic and Republican nominee in the 2024 presidential election based on if they received a college education or not. This tables displays that people that voted Democrat were more likely to have a college degree given that 56% of the proportion of the Democrat vote was with voters who had a college degree. This also shows that people that voted for Republicans were more likely to not have a college degree given that 59% of the proportion of votes for the Republican nominee were voters without a college degree.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
