@@ -1,7 +1,7 @@
 ---
 title: "PS270 Final Project"
 author: "Mia Valliquette"
-description: "My final project"
+description: "Education Levels and Voting Behavior"
 output:
   distill::distill_article:
     self_contained: false
@@ -9,11 +9,8 @@ output:
 
 
 
-## Project thoughts
+## Introduction: Did education levels impact whether a voter voted for the Democratic nominee, Kamala Harris, or the Republican nominee, Donald Trump, during the 2024 election? In this project, I will be finding if there is any correlation between a voters education level and their voting pattern between the Democratic and Republican nominee in the 2024 Presidential Election. This research is very important because it allows analysts to see how education could impact voting patterns and how campaign strategy can be altered in the future to reach different education level demographics to improve turnout for a certain party. My hypothesis is that the lower of an education a person had, they were more likely to vote for Donald Trump in the 2024 election. Specifically, I hypothesize that those with an education level higher than a high school diploma degree were more likely to vote for Kamala Harris during the 2024 election. I predict this because many of the states Donald Trump won in 2024 have under performing school systems and many states Kamala Harris won in 2024 have higher performing school systems.
 
-I am interested in exploring data related to...
--correlation to education and voting patterns 
--political shifts in the most liberal states between 2020-2024
 
 ```{r}
 library(tidyverse)
@@ -25,10 +22,15 @@ anes_2024 <- read_csv("anes_timeseries_2024_csv_20250808.csv")
 ```
 ```{r}
 head(anes_2024)
+view(anes_2024)
 ```
 
 
-How did education levels impact voting choices in the 2024 presidential election? In this project, I am interested in seeing if there is any correlation between the level of education a person has achieved and their voting choice during the 2024 election. My hypothesis is that the lower of an education a person had, they were more likely to vote for Donald Trump in the 2024 election. Many of the states Donald Trump won in 2024 have under performing school systems and many states Kamala Harris won in 2024 have higher performing school systems. For this project, I will be using American National Election Studies 2024 Time Series study to complete my analysis. My explanatory variable is V241463 and is the highest education level achieved by the respondent. This variable is measured through a pre-election survey question and has various labels for the respondent's answer. For example, 1 = less than first grade, 2 = 1st, 2nd, 3rd or 4th grade, 3 = 5th or 6th grade, and so on until 16 = doctorate degree. My outcome variable is labelled V242067 who did the respondent vote for the 2024 presidential election. This variable is measured through a post-election survey question and is labelled 1 = Kamala Harris, 2 =Donald Trump, 4 = Cornell West, 5 = Jill Stein, and 6 = another candidate. The observed pattern in my data that would support my hypothesis would be that the data shows correlation between respondents with education levels of a high school diploma or below having voted for Donald Trump and a correlation between respondents with education levels beyond a high school diploma having voted for Kamala Harris. An observed pattern that shows no real correlation between education and voting patterns or higher educated respondents as Trump voters would disprove my hypothesis. 
+## Data Section: For this project, I will be using American National Election Studies 2024 Time Series study to complete my analysis. This data is survey data taken nationwide. My explanatory variable is V241463, which is the education level variable. This variable has been renamed as "education" in the data. This variable is measured through a pre-election survey question and has various labels for the respondent's answer. For example, 1 = less than first grade, 2 = 1st, 2nd, 3rd or 4th grade, 3 = 5th or 6th grade, and so on until 16 = doctorate degree. My outcome variable is labelled V242067 which is who the respondent voted for the 2024 presidential election. This variable has been renamed to "vote_choice" in the data. This variable is measured through a post-election survey question and is labelled 1 = Kamala Harris, 2 =Donald Trump. I have removed the variables of other third party candidates because they are insignificant to my project. 
+
+##The observed pattern in my data that would meet the criteria to support my hypothesis would be that the data shows correlation between respondents with an education level of a high school diploma or less having between respondents with education levels beyond a high school diploma having voted for Donald Trump. In other words, I would see a clear pattern that education levels below a Bachelor's degree would have a larger proportion of support for Trump. I should also be able to see a larger share in the proportion for Kamala voters in the groups of education levels higher than a high school diploma. An observed pattern that shows an equal party voter proportion share and which indicates no real correlation between education and voting patterns or higher educated respondents having a larger share of Trump votes would disprove my hypothesis. Below, I have a barplot visualizing the main outcome of interest, which is each candidates vote proportion relative to the respondent's attained education level.
+
+##
 
 ```{r}
 library(dplyr)
@@ -41,29 +43,75 @@ anes_data <- anes_2024 |>
   rename(
     education = V241463,
     vote_choice = V242067
-  ) |>
+    )|>
 drop_na(education, vote_choice)
 ```
 
-
 ```{r}
 anes_data |>
-  filter(vote_choice %in% c(1, 2)) |>   
+  filter(vote_choice %in% c(1, 2)) |>
   mutate(
-    education = factor(education),
-    vote_choice = if_else(vote_choice == 1, "Democrat", "Republican")
+    education = recode(as.character(education),
+      "-9" = "Refused",
+      "-8" = "Don't Know",
+      "-1" = "Inapplicable",
+      "1" = "Less than 1st grade",
+      "2" = "1st, 2nd, 3rd, or 4th grade",
+      "3" = "5th or 6th grade",
+      "4" = "7th or 8th grade",
+      "5" = "9th grade",
+      "6" = "10th grade",
+      "7" = "11th grade",
+      "8" = "12th grade no diploma",
+      "9" = "High school graduate",
+      "10" = "Some college, no degree",
+      "11" = "Associate degree (Occupational/Vocational)",
+      "12" = "Associate degree (Academic)",
+      "13" = "Bachelor's degree",
+      "14" = "Master's degree",
+      "15" = "Professional school degree",
+      "16" = "Doctorate degree",
+      "95" = "Other"),
+    education = factor(
+      education,
+      levels = c(
+        "Less than 1st grade",
+        "1st, 2nd, 3rd, or 4th grade",
+        "5th or 6th grade",
+        "7th or 8th grade",
+        "9th grade",
+        "10th grade",
+        "11th grade",
+        "12th grade no diploma",
+        "High school graduate",
+        "Some college, no degree",
+        "Associate degree (Occupational/Vocational)",
+        "Associate degree (Academic)",
+        "Bachelor's degree",
+        "Master's degree",
+        "Professional school degree",
+        "Doctorate degree",
+        "Other",
+        "Don't Know",
+        "Refused",
+        "Inapplicable")),
+vote_choice = if_else(vote_choice == 1, "Democrat", "Republican")
   ) |>
   ggplot(aes(x = education, fill = vote_choice)) +
   geom_bar(position = "fill") +
   scale_fill_manual(values = c("Democrat" = "blue", "Republican" = "red")) +
   labs(
-    title = "Vote Choice by Education Level",
+    title = "Vote Choice by Level of Education Achieved",
     x = "Education Level",
     y = "Vote Proportion",
     fill = ""
-  ) 
-anes_data
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
 ```
+
+
 ```{r}
 anes_data |>
   filter(vote_choice %in% c(1, 2)) |>
@@ -80,10 +128,23 @@ anes_data |>
   )|>
   knitr::kable(digits = 2)
 ```
-This table displays the average proportion of votes given to the Democratic and Republican nominee in the 2024 presidential election based on if they received a college education or not. This tables displays that people that voted Democrat were more likely to have a college degree given that 56% of the proportion of the Democrat vote was with voters who had a college degree. This also shows that people that voted for Republicans were more likely to not have a college degree given that 59% of the proportion of votes for the Republican nominee were voters without a college degree. 
 
+```{r}
+anes_regression <- anes_data %>%
+  filter(vote_choice %in% c(1, 2)) %>%
+  mutate(
+    vote_binary = ifelse(vote_choice == 2, 1, 0),
+    education_num = as.numeric(education))
+vote_model <- lm(vote_binary ~ education_num, data = anes_regression)
+summary(vote_model)
+```
+##Results: The first visual barplot displays the proportion share of between Kamala Harris and Donald Trump. The blue bar represents Kamala Harris and the red bar represents Donald Trump. The x axis has the levels of education from the respondents while the y axis has the proportion of votes. Overall, there is a general increase in support for Kamala Harris as education increases, but it is not perfectly linear. At the lowest levels of education, such as 5th and 6th grade as well as 9th grade having a greater proportion of Harris voters rather than Trump voters. Between 11th and 12th grade, high school diploma as well as Associate's degree, the respondents had a larger proportion share of Trump support. Bachelor's degrees and beyond display a noticeble shift, with those respondents having a large proportion of votes for Harris. Overall, this display generally supports my hypothesis, but the irregularities in the proportions for Trump support in the Associate's degree category suggests there are other confounding variables at hand. 
 
+##This second table displays the main analysis through the average proportion of votes given to the Democratic and Republican nominee in the 2024 presidential election based on if they received a college education or not. This model clearly supports my analysis that college educated respondents, 56% voted for Kamala Harris and 44% voted for Donald Trump, which shows Democrats having a 12 point positive difference. In terms of non-college educated voters, 41% voted for Kamala Harris and 59% voted for Donald Trump, giving Republicans an 18 point positive increase. This represents a 30 point difference between the two parties and shows that respondents with a college degree were more likely to support Kamala Harris, while those without a college degree were more likely to support Donald Trump. Overall, this result supports my hypothesis that voters with a Bachelor's degree or higher were more likely to vote for Kamala Harris. 
 
+##The linear regression model shows that the relationship between education level and voting choice is statsitically significant at the 95% confidence interval because the p-value is 0.00142 which is less than an alpha value of 0.05. In addition, the coefficient of -0.003 means that for every one-unit increase in education level, the probability a voter votes for trump decreases by about 0.3 percentage points. Therefore, the data suggests that a higher education level is associated with a slight increase for Harris and a slight decrease for support in Trump.
+
+##Conclusion: Overall, the barplot, the table displaying the averages of each parties vote share between college educated and non-college educated voters, and the regression model all provide support for my hypothesis that voters with a high school diploma or higher were more likely to vote for Kamala Harris and voters with lower levels of education were more likely to vote for Donald Trump in the 2024 Presidential election. With the main table of averages and the regression model supporting this, the irregularities in the Associate's degree respondents group as well as the 5th and 6th grade and 9th grade respondent group do interfere with the strongness of my argument. Due to the visual analysis as well as the slight significance in the regression, I believe there are a few confounding variables that were not accounted for. While income can have a strong correlation to education level, race and age are two confounding variables not accounted for in this study that could have implications on the outcome of the results. Also, the "Refused" category and the "Don't know" category could cause bias within the data. If I had more time/money, the analysis could be improved by adding additional control variables such as age and race. I would also want to spend more time addressing the "Refused" and "Don't know" categories on the data to get more insight on these groups. In addition, I would like to add respondents who didn't vote and if that correlated to their education level. 
 
 
 
